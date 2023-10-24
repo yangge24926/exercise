@@ -1,5 +1,5 @@
-import React, { useRef, useState, useCallback } from 'react';
-import './index.css';
+import React, { useRef, useState, useCallback } from "react";
+import "./index.css";
 
 async function increaseRemote(a: number) {
   await new Promise((resolve) => setTimeout(resolve, Math.random() * 1e3));
@@ -17,24 +17,21 @@ function App() {
   const [count, setCount] = useState(0);
   const loading = useRef(false);
 
-  const increase = useCallback(async () => {
-    if (loading.current) {
-      return;
-    }
-    loading.current = true;
-    const data = await increaseRemote(count);
-    setCount(data);
-    loading.current = false;
-  }, [count]);
-
-  const handleClick = (num) => {
-    if (num === 1) {
-      increase();
-    } else if (num === 2) {
-      increase();
-      increase();
-    }
-  };
+  const handleClick = useCallback(
+    async (num: number) => {
+      if (loading.current) {
+        return;
+      }
+      loading.current = true;
+      let data = count;
+      for (let i = 0; i < num; i++) {
+        data = await increaseRemote(data);
+      }
+      setCount(data);
+      loading.current = false;
+    },
+    [count]
+  );
 
   return (
     <div className="App">
